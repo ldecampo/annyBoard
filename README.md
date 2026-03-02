@@ -55,7 +55,7 @@ typedef struct Tile {
 ```
 I've included bonus comments so that you know what everything does
 
-###Sample Plugins
+### Sample Plugins
 There are many sample plugins for you to base your plugin off of! 
 - `image_tile` displays a typical png image
 - `video_tile` displays a video, ooh
@@ -64,7 +64,7 @@ There are many sample plugins for you to base your plugin off of!
 
 I can understand making a big thing in C, ESPECIALLY graphics can be daunting, but check out these files if you're worried. You'll definitely be able to figure it out. 
 
-##Controls
+## Controls
 I've included some simple keyboard controls for convenience 
 
 - `r`: reloads everything
