@@ -180,11 +180,11 @@ static void rebuild_texts(State *s) {
     char line4[128];
 
     snprintf(line1, sizeof(line1), "Group of the day!");
-    snprintf(line2, sizeof(line2), "Z/%dZ (p is prime)", s[0].prime);
+    snprintf(line2, sizeof(line2), "Z/%dZ (%d is prime)", s[0].prime, s[0].prime);
 
     if (s[0].has_choice) {
-        snprintf(line3, sizeof(line3), "Picked a = %d (mod %d)", s[0].a, s[0].prime);
-        snprintf(line4, sizeof(line4), "a^{-1} mod %d = %d", s[0].prime, s[0].inv);
+        snprintf(line4, sizeof(line4), "");
+        snprintf(line3, sizeof(line3), "%d^{-1} mod %d = %d", s[0].a, s[0].prime, s[0].inv);
     } else {
         snprintf(line3, sizeof(line3), "Picking element...");
         snprintf(line4, sizeof(line4), "");
