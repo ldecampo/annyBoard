@@ -92,46 +92,49 @@ static size_t download(char *data, size_t size, size_t nmemb, void *clientp) {
 
 static void parse_weather(Weather *w, CURL_Critter *c) {
 	xmlDoc *doc = xmlParseDoc((xmlChar *)c->response);
+	//xmlNodePtr root = NULL;
 	xmlNodePtr root = xmlDocGetRootElement(doc);
-	
-	for (xmlNodePtr cur = root->children; cur != NULL; cur = cur->next) {
-		// evil else-if of doom
-		if (strcmp(cur->name, "temperature") == 0) {
-			w->temp = atof(xmlGetProp(cur, "value"));
-			xmlChar *unit_name = xmlGetProp(cur, "unit");
-			if (strcmp(unit_name, "fahrenheit") == 0) {
-				strcpy(w->temp_unit, "F");
-			} else if (strcmp(unit_name, "celsius") == 0) {
-				strcpy(w->temp_unit, "C");
-			} else if (strcmp(unit_name, "kelvin") == 0) {
-				strcpy(w->temp_unit, "K");
-			}
-		} else if (strcmp(cur->name, "feels_like") == 0) {
-			w->feels_like = atof(xmlGetProp(cur, "value"));
-		} else if (strcmp(cur->name, "humidity") == 0) {
-			w->humidity = atoi(xmlGetProp(cur, "value"));
-		} else if (strcmp(cur->name, "pressure") == 0) {
-			w->pressure = atoi(xmlGetProp(cur, "value"));
-			strcpy(w->pressure_unit,  xmlGetProp(cur, "unit"));
-		} else if (strcmp(cur->name, "wind") == 0) {
-			for (xmlNodePtr windChild = cur->children; windChild != NULL; windChild = windChild->next) {
-				if (strcmp(windChild->name, "speed") == 0) {
-					w->wind_speed = atof(xmlGetProp(windChild, "value"));
-					strcpy(w->wind_unit, xmlGetProp(windChild, "unit"));
+	if (root != NULL) {	
+		for (xmlNodePtr cur = root->children; cur != NULL; cur = cur->next) {
+			// evil else-if of doom
+			if (strcmp(cur->name, "temperature") == 0) {
+				w->temp = atof(xmlGetProp(cur, "value"));
+				xmlChar *unit_name = xmlGetProp(cur, "unit");
+				if (strcmp(unit_name, "fahrenheit") == 0) {
+					strcpy(w->temp_unit, "F");
+				} else if (strcmp(unit_name, "celsius") == 0) {
+					strcpy(w->temp_unit, "C");
+				} else if (strcmp(unit_name, "kelvin") == 0) {
+					strcpy(w->temp_unit, "K");
+				}
+			} else if (strcmp(cur->name, "feels_like") == 0) {
+				w->feels_like = atof(xmlGetProp(cur, "value"));
+			} else if (strcmp(cur->name, "humidity") == 0) {
+				w->humidity = atoi(xmlGetProp(cur, "value"));
+			} else if (strcmp(cur->name, "pressure") == 0) {
+				w->pressure = atoi(xmlGetProp(cur, "value"));
+				strcpy(w->pressure_unit,  xmlGetProp(cur, "unit"));
+			} else if (strcmp(cur->name, "wind") == 0) {
+				for (xmlNodePtr windChild = cur->children; windChild != NULL; windChild = windChild->next) {
+					if (strcmp(windChild->name, "speed") == 0) {
+						w->wind_speed = atof(xmlGetProp(windChild, "value"));
+						strcpy(w->wind_unit, xmlGetProp(windChild, "unit"));
+					}
 				}
 			}
 		}
+
+	} else {
+		fprintf(stderr, "Unable to load weather data! Is there a connection to the internet?\n");
 	}
-
 }
-
 static Weather* get_weather(State *s) {
     Weather *w = malloc(sizeof(Weather));
-    w->feels_like = 0.0;
-    w->humidity = 0;
-    w->pressure = 0;
-    w->temp = 0;
-    w->wind_speed = 0.0;
+    w->feels_like = -1.0;
+    w->humidity = -1;
+    w->pressure = -1;
+    w->temp = -1;
+    w->wind_speed = -1.0;
     strcpy(w->description, "");
     strcpy(w->temp_unit, "");
     strcpy(w->pressure_unit, "");
